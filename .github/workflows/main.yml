@@ -1,0 +1,34 @@
+name: Deploy HTML Website via SSH
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Install SSH client (if not already installed)
+    - name: Install SSH client
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
+    # Deploy files to the server
+    - name: Deploy HTML to Server
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SECRET_KALANI }}  # Add your private SSH key to the repository secrets
+        SERVER_IP: "13.212.19.164"                       # Server IP
+      run: |
+        # Set up SSH
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+        # Deploy all files to the server root directory
+        rsync -avz --delete ./ ubuntu@$SERVER_IP:/www/wwwroot/kalani2025.run.place \
+          --rsh="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
