@@ -30,5 +30,5 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
 
         # Deploy all files to the server root directory
-        rsync -avz --delete ./ ubuntu@$SERVER_IP:/www/wwwroot/kalani2025.run.place \
+        rsync -avz --delete ./ root@$SERVER_IP:/www/wwwroot/kalani2025.run.place \
           --rsh="ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa"
